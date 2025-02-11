@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 
 const RequestedDomains = ({ domainlist }) => {
+  const [domainlist,setDomainlist] = useState([]);
   if (domainlist.length === 0) return null;
+  const userRole = localStorage.getItem("role");
+  useEffect(() => {
+    if (userRole === "DRM") {
+      const fetchDomains = async () => {
+        try {
+          const response = await axios.get("https://api.example.com/domains"); // Replace with actual API
+          setDomainlist(response.data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      fetchDomains();
+    }
+  }, [userRole]);
 
   return (
     <div className="bg-gray-800 p-4 rounded-lg shadow-md">

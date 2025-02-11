@@ -5,7 +5,6 @@ import axios from "axios";
 
 const Dashboard = () => {
   const [showForm, setShowForm] = useState(false);
-  const [domainlist, setDomainlist] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([
     "Welcome to Dashboard!",
@@ -13,21 +12,6 @@ const Dashboard = () => {
   ]);
 
   const userRole = localStorage.getItem("role");
-
-  // Fetch DRM domain requests
-  useEffect(() => {
-    if (userRole === "DRM") {
-      const fetchDomains = async () => {
-        try {
-          const response = await axios.get("https://api.example.com/domains"); // Replace with actual API
-          setDomainlist(response.data);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      fetchDomains();
-    }
-  }, [userRole]);
 
   // DRM submits a new domain request
   const handleSubmit = async (e) => {
@@ -52,9 +36,8 @@ const Dashboard = () => {
         }
       );
       if (response.status === 200 || response.status === 201) {
-        // Successfully submitted, update UI
-        setDomainlist([...domainlist, newDomainRequest]);
-        setShowForm(false);
+        console.log("Successfully submitted");
+         setShowForm(false);
       }
     } catch (error) {
       console.error("Error submitting request:", error);
@@ -130,7 +113,7 @@ const Dashboard = () => {
       {userRole === "ARM" && <ARMRequestedDomains />}
 
       {/* Show DRM Requests Table only for DRM Users */}
-      {userRole === "DRM" && <RequestedDomains domainlist={domainlist} />}
+      {userRole === "DRM" && <RequestedDomains/>}
     </div>
   );
 };

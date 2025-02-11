@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import RequestedDomains from "../components/RequestedDomains";
 import ARMRequestedDomains from "../components/ARMRequestedDomains"; // Import the ARM-specific component
 import axios from "axios";
+import Filter from "../components/Filter";
 
 const Dashboard = () => {
   const [showForm, setShowForm] = useState(false);
@@ -66,7 +67,7 @@ const Dashboard = () => {
         )}
 
         {/* Notifications Button (Unchanged for both roles) */}
-        <button
+        {/* <button
           className="relative bg-gray-700 hover:bg-gray-600 p-2 rounded-full"
           onClick={() => setShowNotifications(!showNotifications)}
         >
@@ -84,7 +85,7 @@ const Dashboard = () => {
               )}
             </div>
           )}
-        </button>
+        </button> */}
       </div>
 
       {/* DRM Request Form */}
@@ -114,6 +115,7 @@ const Dashboard = () => {
 
       {/* Show DRM Requests Table only for DRM Users */}
       {userRole === "DRM" && <RequestedDomains/>}
+      <Filter/>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const RequestedDomains = ({ domainlist }) => {
+const RequestedDomains = () => {
   const [domainlist,setDomainlist] = useState([]);
   if (domainlist.length === 0) return null;
   const userRole = localStorage.getItem("role");

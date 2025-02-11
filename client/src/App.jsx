@@ -1,9 +1,9 @@
-  import { react ,useState} from 'react'
-
-  import './App.css'
+import { react ,useState} from 'react'
+import './App.css'
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import {  Routes, Route } from "react-router-dom";
 
   function App() {
     
@@ -11,17 +11,18 @@ import Dashboard from './pages/Dashboard';
 
   return (
     <>
-        <div>
-          {/* <Signup/> */}
-          {/* <Login/>   */}
-          <Dashboard/>
+        <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
 
-        </div>
     </>
   ) 
 
 }
           
-export default App
+export default App;
           
 

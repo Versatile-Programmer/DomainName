@@ -1,6 +1,7 @@
 import React ,{useState} from 'react'
-
+import { useNavigate } from 'react-router-dom';
 export default function Signup() {
+  const navigate = useNavigate();
     const handleChange = (e)=>{
         console.log(e.target);
         const {name,value}=e.target;
@@ -27,6 +28,7 @@ export default function Signup() {
                 withCredentials: true
                 
             })
+            navigate('/login');
         } catch (error) {
             console.error("error message",error);
         }

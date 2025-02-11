@@ -12,7 +12,7 @@ const Login = () => {
 
 
     try {
-        const res=axios.post("http://localhost:8080/login/loginUser",{},{
+        const res=await axios.post("http://localhost:8080/login/loginUser",{},{
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': basicAuth
@@ -20,7 +20,20 @@ const Login = () => {
          withCredentials:true
         }
         )
+        console.log("res",res);
         console.log(res.data);
+        const data=JSON.stringify(res.data);
+
+        localStorage.setItem("userData",data);
+        console.log("data ",data);
+        console.log(data.role);
+        localStorage.setItem("role",(res.data.role==='ROLE_DRM')?"DRM":(res.data.role==='ROLE_ARM')?"ARM":(res.data.role==='ROLE_HOD')?"HOD":null);
+
+        // "id": 1,
+        // "name": "RS",
+        // "email": "rishisarkar1234@gmail.com",
+        // "dept": "CSE",
+        // "role": "ROLE_ARM"
         navigate('/dashboard');
     } catch (error) {
         console.error("error",error);

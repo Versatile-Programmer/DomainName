@@ -1,5 +1,8 @@
 import React ,{useState} from 'react'
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+
 export default function Signup() {
   const navigate = useNavigate();
     const handleChange = (e)=>{
@@ -7,7 +10,7 @@ export default function Signup() {
         const {name,value}=e.target;
         setFormData({...formData, [name]:value});
     }   
-    const handleSignup = (e)=>{
+    const handleSignup = async(e)=>{
         e.preventDefault();
 
         console.log(e.target);
@@ -21,7 +24,7 @@ export default function Signup() {
         }
         console.log(payload);
         try {
-            const res = axios.post("http://localhost/register/registerDrm",payload,{
+            const res = await axios.post("http://localhost:8080/register/registerDrm",payload,{
                 headers: {
                     'Content-Type': 'application/json'
                 },

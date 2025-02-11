@@ -3,13 +3,20 @@ import axios from "axios";
 
 const ARMRequestedDomains = () => {
   const [armDomainList, setArmDomainList] = useState([]);
-
+  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+  const armId = userData.id;
   useEffect(() => {
     const fetchARMRequests = async () => {
       try {
         const response = await axios.get(
-          "https://api.example.com/all-arm-requests"
+        `http://localhost:8080/arm/getDomainRequests/${armId}`,{
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true
+        }
         ); // Replace with correct API endpoint
+        console.log("response ARM", response.data);
         setArmDomainList(response.data);
       } catch (error) {
         console.error("Error fetching ARM domain requests:", error);
@@ -33,7 +40,7 @@ const ARMRequestedDomains = () => {
             <thead>
               <tr className="bg-gray-700">
                 <th className="border border-gray-600 p-2">Domain Name</th>
-                <th className="border border-gray-600 p-2">Status</th>
+                <th className="border border-gray-600 p-2">Active Status</th>
                 <th className="border border-gray-600 p-2">ARM Status</th>
                 <th className="border border-gray-600 p-2">HOD Status</th>
                 <th className="border border-gray-600 p-2">Requested Date</th>
@@ -46,16 +53,16 @@ const ARMRequestedDomains = () => {
                     {domain.domainName}
                   </td>
                   <td className="border border-gray-600 p-2">
-                    {domain.status}
+                  {(domain.status.activeStatus)?"ACTIVE":"NOT ACTIVE"}
                   </td>
                   <td className="border border-gray-600 p-2">
-                    {domain.armStatus}
+                  {domain.status.armStatus}
                   </td>
                   <td className="border border-gray-600 p-2">
-                    {domain.hodStatus}
+                  {domain.status.hodStatus}
                   </td>
                   <td className="border border-gray-600 p-2">
-                    {domain.requestedDate}
+                  {domain.dates.drmRequestedDate}
                   </td>
                 </tr>
               ))}

@@ -4,6 +4,9 @@ import ARMRequestedDomains from "../components/ARMRequestedDomains"; // Import t
 import axios from "axios";
 import Filter from "../components/Filter";
 
+import Cookies from "js-cookie"
+import { useNavigate } from "react-router-dom";
+
 const Dashboard = () => {
   const [showForm, setShowForm] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -13,6 +16,7 @@ const Dashboard = () => {
   ]);
 
   const userRole = localStorage.getItem("role");
+  const navigate = useNavigate();
 
   // DRM submits a new domain request
   const handleSubmit = async (e) => {
@@ -20,22 +24,37 @@ const Dashboard = () => {
     const data = new FormData(e.target);
     const domainName = data.get("domain");
 
+
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+
+    const drmId = userData.id;
+    const dept=userData.dept;
+  //   private LocalDate neededTillDate;
+	
+
+	// private String dept;
+	
+
     const newDomainRequest = {
-      domainName,
-      status: "pending",
-      armStatus: "pending",
-      hodStatus: "pending",
-      requestedDate: new Date().toLocaleDateString(),
+      domainName:domainName,
+      drmId: drmId,
+      dept:dept
+      //requestedDate: new Date().toLocaleDateString(),
     };
 
     try {
       const response = await axios.post(
-        "https://apiforpost.com", // Replace with actual API
+        "http://localhost:8080/domain/requestDomain", // Replace with actual API
         newDomainRequest,
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json"
+           },
+           withCredentials:true
         }
       );
+
+      console.log("response IN DASHBOARD", response.data);
       if (response.status === 200 || response.status === 201) {
         console.log("Successfully submitted");
          setShowForm(false);
@@ -43,6 +62,41 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error submitting request:", error);
     }
+  };
+
+  
+
+const clearCookies = () => {
+  Cookies.remove("JSESSIONID", { path: "/" }); // Remove with path
+ // Cookies.remove("another_cookie", { path: "/" }); // Remove with specific path
+}
+
+
+
+  const handleLogout = () => {
+    // // Clear all cookies
+    // document.cookie.split(";").forEach((cookie) => {
+    //   document.cookie = cookie
+    //     .replace(/^ +/, "") // Trim leading spaces
+    //     .replace(/=.*/, "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/");
+    // });
+  
+    // // Alternative: Using js-cookie (Recommended)
+    // Object.keys(Cookies.get()).forEach((cookie) => Cookies.remove(cookie));
+  
+    // // Clear localStorage
+    // localStorage.clear();
+  
+    // // Clear sessionStorage (optional)
+    // sessionStorage.clear();
+
+    clearCookies();
+    localStorage.clear();
+    sessionStorage.clear();
+    // window.location.reload(); 
+  
+    // Redirect to login page
+    navigate('/login'); // Change the path accordingly
   };
 
   return (
@@ -65,6 +119,16 @@ const Dashboard = () => {
             Approve Requests
           </button>
         )}
+
+
+        
+
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg"
+        >
+          Logout
+        </button>
 
         {/* Notifications Button (Unchanged for both roles) */}
         {/* <button

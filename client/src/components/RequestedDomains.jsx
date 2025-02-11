@@ -5,11 +5,21 @@ const RequestedDomains = () => {
   const [domainlist, setDomainlist] = useState([]);
   const userRole = localStorage.getItem("role");
 
+  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+  const drmId = userData.id;
+
   useEffect(() => {
     if (userRole === "DRM") {
       const fetchDomains = async () => {
         try {
-          const response = await axios.get("https://api.example.com/domains"); // Replace with actual API
+          const response = await axios.get(`http://localhost:8080/drm/requestedDomains/${drmId}`,{
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true
+          }); // Replace with actual API
+
+          console.log("responseDRM ", response.data);
           setDomainlist(response.data);
         } catch (error) {
           console.error("Error fetching domain list:", error);
@@ -30,7 +40,7 @@ const RequestedDomains = () => {
             <thead>
               <tr className="bg-gray-700 text-white">
                 <th className="border border-gray-600 p-2">Domain Name</th>
-                <th className="border border-gray-600 p-2">Status</th>
+                <th className="border border-gray-600 p-2">Active Status</th>
                 <th className="border border-gray-600 p-2">ARM Status</th>
                 <th className="border border-gray-600 p-2">HOD Status</th>
                 <th className="border border-gray-600 p-2">Requested Date</th>
@@ -40,10 +50,10 @@ const RequestedDomains = () => {
               {domainlist.map((domain, index) => (
                 <tr key={index} className="text-center bg-gray-900 text-white">
                   <td className="border border-gray-600 p-2">{domain.domainName}</td>
-                  <td className="border border-gray-600 p-2">{domain.status}</td>
-                  <td className="border border-gray-600 p-2">{domain.armStatus}</td>
-                  <td className="border border-gray-600 p-2">{domain.hodStatus}</td>
-                  <td className="border border-gray-600 p-2">{domain.requestedDate}</td>
+                  <td className="border border-gray-600 p-2">{(domain.status.activeStatus)?"ACTIVE":"NOT ACTIVE"}</td>
+                  <td className="border border-gray-600 p-2">{domain.status.armStatus}</td>
+                  <td className="border border-gray-600 p-2">{domain.status.hodStatus}</td>
+                  <td className="border border-gray-600 p-2">{domain.dates.drmRequestedDate}</td>
                 </tr>
               ))}
             </tbody>

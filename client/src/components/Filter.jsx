@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { handleError, handleSuccess } from "../utils";
 
 function Filter() {
   const [domainList, setDomainList] = useState([]);
@@ -41,6 +42,7 @@ function Filter() {
         setFilteredDomains(validDomains); // Set initial filtered domains
       } catch (error) {
         console.error("Error fetching data:", error);
+        handleError("Failed to Fetch Domain");
       } finally {
         setLoading(false); // Set loading to false once the fetch is complete
       }

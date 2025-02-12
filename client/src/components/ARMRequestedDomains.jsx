@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { handleError, handleSuccess } from "../utils";
 const ARMRequestedDomains = () => {
   const [armDomainList, setArmDomainList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +28,7 @@ const ARMRequestedDomains = () => {
       setArmDomainList(response.data);
     } catch (error) {
       console.error("Error fetching ARM domain requests:", error);
+      handleError("Failed to fetch Domain");
     }
   };
 
@@ -41,12 +43,13 @@ const ARMRequestedDomains = () => {
           withCredentials: true 
         }
       );
-      if (response.status === 200) {
-        alert("Request Approved");
+      if (response.status === 200 || response.status === 201 || response.status === 202) {
         fetchARMRequests();
+        handleSuccess("Request Approved");
       }
     } catch (error) {
       console.error("Error approving request:", error);
+      handleError("internal server error")
     } finally {
       setIsLoading(false);
     }
@@ -66,6 +69,7 @@ const ARMRequestedDomains = () => {
       }
     } catch (error) {
       console.error("Error rejecting request:", error);
+      handleError("Failed to Reject");
     } finally {
       setIsLoading(false);
     }

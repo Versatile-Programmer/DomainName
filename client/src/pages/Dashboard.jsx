@@ -3,9 +3,11 @@ import RequestedDomains from "../components/RequestedDomains";
 import ARMRequestedDomains from "../components/ARMRequestedDomains"; // Import the ARM-specific component
 import axios from "axios";
 import Filter from "../components/Filter";
+import { ToastContainer } from "react-toastify";
 
 import Cookies from "js-cookie"
 import { useNavigate } from "react-router-dom";
+import { handleError, handleSuccess } from "../utils";
 
 const Dashboard = () => {
   const [showForm, setShowForm] = useState(false);
@@ -56,12 +58,13 @@ const Dashboard = () => {
       );
 
       console.log("response IN DASHBOARD", response.data);
-      if (response.status === 200 || response.status === 201) {
-        console.log("Successfully submitted");
+      if (response.status === 200 || response.status === 201 || response.status === 202) {
+        handleSuccess("Request Created Successfully");
          setShowForm(false);
       }
     } catch (error) {
       console.error("Error submitting request:", error);
+      handleError("Failed to create Request");
     }
   };
 
@@ -97,6 +100,7 @@ const clearCookies = () => {
     // window.location.reload(); 
   
     // Redirect to login page
+    handleSuccess("You have been Logged out successfully");
     navigate('/login'); // Change the path accordingly
   };
 
@@ -179,6 +183,7 @@ const clearCookies = () => {
       {/* Show DRM Requests Table only for DRM Users */}
       {userRole === "DRM" && <RequestedDomains/>}
       <Filter/>
+      <ToastContainer/>
     </div>
   );
 };

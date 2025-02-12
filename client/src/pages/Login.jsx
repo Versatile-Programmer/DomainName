@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { ToastContainer } from 'react-toastify'
+import { handleError, handleSuccess } from "../utils";
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -34,9 +36,10 @@ const Login = () => {
         // "email": "rishisarkar1234@gmail.com",
         // "dept": "CSE",
         // "role": "ROLE_ARM"
+        handleSuccess("Login Successful");
         navigate('/dashboard');
     } catch (error) {
-        console.error("error",error);
+        handleError("Login Failed");
     }
 
 
@@ -101,7 +104,7 @@ const Login = () => {
           </a>
         </p>
       </div>
-      {/* <ToastContainer/> */}
+      <ToastContainer/>
     </div>
   );
 };

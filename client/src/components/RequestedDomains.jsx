@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // Import axios
+import { handleError } from "../utils";
 
 const RequestedDomains = () => {
   const [domainlist, setDomainlist] = useState([]);
@@ -23,6 +24,7 @@ const RequestedDomains = () => {
           setDomainlist(response.data);
         } catch (error) {
           console.error("Error fetching domain list:", error);
+          handleError("Failed to Fetch Domain List");
         }
       };
       fetchDomains();

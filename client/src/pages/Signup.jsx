@@ -1,6 +1,8 @@
 import React ,{useState} from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer } from 'react-toastify';
+import { handleError, handleSuccess } from '../utils';
 
 
 export default function Signup() {
@@ -31,9 +33,11 @@ export default function Signup() {
                 withCredentials: true
                 
             })
+            handleSuccess("Signup Successful")
             navigate('/login');
         } catch (error) {
-            console.error("error message",error);
+            // console.error("error message",error);
+            handleError("Signup Failed")
         }
     }
   return (
@@ -130,7 +134,7 @@ export default function Signup() {
         </a>
       </p>
     </div>
-    {/* <ToastContainer/> */}
+    <ToastContainer/>
   </div>
   )
 }

@@ -58,15 +58,20 @@ const ARMRequestedDomains = () => {
   const handleReject = async (domainId) => {
     setIsLoading(true);
     try {
-      const response = await axios.patch(
-        `http://localhost:8080/arm/rejectDomainRequests/${domainId}`,
-        { armStatus: "rejected" },
-        { withCredentials: true }
+      const response = await axios.post(
+        `http://localhost:8080/arm/sendForReview/${domainId}`,
+        {},
+        { 
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true
+        }
       );
       if (response.status === 200) {
-        alert("Request Rejected");
+        // alert("Request Rejected");
         fetchARMRequests();
       }
+      handleSuccess("Request Sent For Review To DRM"); 
+
     } catch (error) {
       console.error("Error rejecting request:", error);
       handleError("Failed to Reject");
@@ -112,7 +117,7 @@ const ARMRequestedDomains = () => {
                     Accept
                   </button>
                   <button
-                    onClick={() => handleReject(domain.id)}
+                    onClick={() => handleReject(domain.requestId)}
                     className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
                     // disabled={isLoading || domain.status.armStatus !== "NOT_VERIFIED"}
                   >

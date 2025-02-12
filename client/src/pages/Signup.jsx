@@ -34,7 +34,9 @@ export default function Signup() {
                 
             })
             handleSuccess("Signup Successful")
-            navigate('/login');
+            setTimeout(() => {
+              navigate('/login');
+            }, 1000);
         } catch (error) {
             // console.error("error message",error);
             handleError("Signup Failed")

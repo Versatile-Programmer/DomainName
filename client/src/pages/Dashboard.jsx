@@ -70,38 +70,35 @@ const Dashboard = () => {
 
   
 
-const clearCookies = () => {
-  Cookies.remove("JSESSIONID", { path: "/" }); // Remove with path
- // Cookies.remove("another_cookie", { path: "/" }); // Remove with specific path
-}
 
 
 
-  const handleLogout = () => {
-    // // Clear all cookies
-    // document.cookie.split(";").forEach((cookie) => {
-    //   document.cookie = cookie
-    //     .replace(/^ +/, "") // Trim leading spaces
-    //     .replace(/=.*/, "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/");
-    // });
-  
-    // // Alternative: Using js-cookie (Recommended)
-    // Object.keys(Cookies.get()).forEach((cookie) => Cookies.remove(cookie));
-  
-    // // Clear localStorage
-    // localStorage.clear();
-  
-    // // Clear sessionStorage (optional)
-    // sessionStorage.clear();
 
-    clearCookies();
+  const handleLogout = async() => {
+    // Clear all cookies and local storage
+    try {
+      await axios.get("http://localhost:8080/logout",{},{
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        withCredentials: true
+        } 
+      )
+      handleSuccess("You have been Logged out successfully");
+    } catch (error) {
+      console.error("Error logging out:", error);
+      handleError("Logout Failed")
+    }finally{
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
+    } 
     localStorage.clear();
     sessionStorage.clear();
-    // window.location.reload(); 
+  
   
     // Redirect to login page
-    handleSuccess("You have been Logged out successfully");
-    navigate('/login'); // Change the path accordingly
+   
   };
 
   return (

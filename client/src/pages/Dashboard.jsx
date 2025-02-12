@@ -115,21 +115,19 @@ const clearCookies = () => {
 
         {/* Show "Approve Requests" button for ARM */}
         {userRole === "ARM" && (
-          <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg">
-            Approve Requests
+          <button
+            className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg"
+            onClick={() => setShowARMRequests(!showARMRequests)}
+          >
+            {showARMRequests ? "Hide Requests" : "Approve Requests"}
           </button>
         )}
-
-
-        
-
         <button
           onClick={handleLogout}
           className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg"
         >
           Logout
         </button>
-
         {/* Notifications Button (Unchanged for both roles) */}
         {/* <button
           className="relative bg-gray-700 hover:bg-gray-600 p-2 rounded-full"
@@ -175,7 +173,7 @@ const clearCookies = () => {
       )}
 
       {/* Show ARM Requests Table only for ARM Users */}
-      {userRole === "ARM" && <ARMRequestedDomains />}
+      {userRole === "ARM" && showARMRequests && <ARMRequestedDomains />}
 
       {/* Show DRM Requests Table only for DRM Users */}
       {userRole === "DRM" && <RequestedDomains/>}

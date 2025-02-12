@@ -1,4 +1,7 @@
 // ARMRequestedDomains.js
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 const ARMRequestedDomains = () => {
   const [armDomainList, setArmDomainList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +23,7 @@ const ARMRequestedDomains = () => {
           withCredentials: true,
         }
       );
+      console.log("ARM Domain Requests:", response.data);
       setArmDomainList(response.data);
     } catch (error) {
       console.error("Error fetching ARM domain requests:", error);
@@ -29,10 +33,13 @@ const ARMRequestedDomains = () => {
   const handleApprove = async (domainId) => {
     setIsLoading(true);
     try {
-      const response = await axios.patch(
-        `http://localhost:8080/arm/acceptDomainRequests/${domainId}`,
-        { armStatus: "approved" },
-        { withCredentials: true }
+      const response = await axios.post(
+        `http://localhost:8080/arm/verifyDomainRequest/${domainId}`,
+        {},
+        { 
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true 
+        }
       );
       if (response.status === 200) {
         alert("Request Approved");
@@ -94,18 +101,18 @@ const ARMRequestedDomains = () => {
                 <td className="border border-gray-600 p-2">{domain.dates.drmRequestedDate}</td>
                 <td className="border border-gray-600 p-2">
                   <button
-                    onClick={() => handleApprove(domain.id)}
+                    onClick={() => handleApprove(domain.requestId)}
                     className="bg-green-600 text-white px-3 py-1 rounded mr-2 hover:bg-green-700"
-                    disabled={isLoading || domain.status.armStatus !== "Pending"}
+                    // disabled={isLoading || domain.status.armStatus !== "NOT_VERIFIED"}
                   >
                     Accept
                   </button>
                   <button
                     onClick={() => handleReject(domain.id)}
                     className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                    disabled={isLoading || domain.status.armStatus !== "Pending"}
+                    // disabled={isLoading || domain.status.armStatus !== "NOT_VERIFIED"}
                   >
-                    Reject
+                    Send for Review
                   </button>
                 </td>
               </tr>

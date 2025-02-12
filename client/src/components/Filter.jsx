@@ -4,7 +4,7 @@ import axios from "axios";
 function Filter() {
   const [domainList, setDomainList] = useState([]);
   const [filteredDomains, setFilteredDomains] = useState([]);
-  const [selectedDays, setSelectedDays] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state for fetching data
 
   // Fetch user details from localStorage
   const userData = JSON.parse(localStorage.getItem("userData") || "{}");
@@ -17,19 +17,32 @@ function Filter() {
 
     async function fetchData() {
       try {
+        setLoading(true); // Set loading to true while fetching
         const endpoint =
           role === "ROLE_DRM"
-            ? `http://localhost:8080/drm/requestedDomains/${id}`: `http://localhost:8080/arm/getDomainRequests/${id}`;
+            ? `http://localhost:8080/drm/requestedDomains/${id}`
+            : `http://localhost:8080/arm/getDomainRequests/${id}`;
 
         const response = await axios.get(endpoint, {
           headers: { "Content-Type": "application/json" },
           withCredentials: true, // Ensure cookies are sent with the request
         });
 
-        setDomainList(response.data);
-        setFilteredDomains(response.data);
+        // Filter out inactive domains
+        const validDomains = response.data.filter(
+          (domain) =>
+            domain.daysLeftTillExpiry !== null &&
+            domain.daysLeftTillExpiry !== undefined &&
+            domain.status.activeStatus
+        );
+
+        // Set both the domain list and filtered list
+        setDomainList(validDomains);
+        setFilteredDomains(validDomains); // Set initial filtered domains
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Set loading to false once the fetch is complete
       }
     }
 
@@ -38,12 +51,16 @@ function Filter() {
 
   // Function to filter records based on days left till expiry
   const handleFilter = (days) => {
-    setSelectedDays(days);
     const filtered = domainList.filter(
-      (domain) => domain.daysLeftTillExpiry <= days
+      (domain) =>
+        domain.daysLeftTillExpiry <= days && domain.status.activeStatus
     );
     setFilteredDomains(filtered);
   };
+
+  if (loading) {
+    return <div className="text-center">Loading...</div>; // Show loading message while fetching data
+  }
 
   return (
     <div className="p-4">
@@ -81,8 +98,12 @@ function Filter() {
             filteredDomains.map((domain, index) => (
               <tr key={index} className="text-center bg-gray-900 text-white">
                 <td className="border border-gray-600 p-2">{domain.domainName}</td>
-                <td className="border border-gray-600 p-2">{(domain.status.activeStatus)?"ACTIVE":"NOT ACTIVE"}</td>
-                <td className="border border-gray-600 p-2">{domain.daysLeftTillExpiry}</td>
+                <td className="border border-gray-600 p-2">
+                  {domain.status.activeStatus ? "ACTIVE" : "NOT ACTIVE"}
+                </td>
+                <td className="border border-gray-600 p-2">
+                  {domain.daysLeftTillExpiry}
+                </td>
               </tr>
             ))
           ) : (

@@ -14,6 +14,7 @@ const Dashboard = () => {
     "Welcome to Dashboard!",
     "Your request is being processed.",
   ]);
+  const [showARMRequests, setShowARMRequests] = useState(false);
 
   const userRole = localStorage.getItem("role");
   const navigate = useNavigate();

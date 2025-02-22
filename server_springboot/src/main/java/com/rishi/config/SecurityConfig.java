@@ -35,6 +35,7 @@ public class SecurityConfig {
 	@Bean
 	public DaoAuthenticationProvider authentication() {
 		DaoAuthenticationProvider dao=new DaoAuthenticationProvider();
+//		IN TESTING PHASE PLEASE USE A PASSWORD ENCODER LIKE bcrypt
 		dao.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
 		dao.setUserDetailsService(userDetailsService);
 		return dao;

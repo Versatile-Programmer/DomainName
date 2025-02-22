@@ -38,8 +38,10 @@ public class EmailService {
         String domainName = domain.getDomainName();
         LocalDate dateOfExpiry = domain.getDates().getDateOfExpiry();
         long daysLeft = Math.max(ChronoUnit.DAYS.between(LocalDate.now(), dateOfExpiry), 0);
-
-        helper.setFrom("no-reply@yourdomain.com");
+        String senderMail=System.getenv("SENDER_MAIL");
+        
+        
+        helper.setFrom(senderMail);
         helper.setTo(drmEmail);
 
         // Properly set CC recipients

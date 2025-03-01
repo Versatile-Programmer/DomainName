@@ -1,0 +1,49 @@
+services:
+  dns_app:
+    build: . # Will build the docker file in the project directory
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env 
+      #Should contain env variables :
+      #DB_USERNAME
+      #DB_PASSWORD
+      #DB_URL
+      #SENDER_MAIL
+      #GMAIL_APP_PASSWORD
+    depends_on : 
+      - dns_db: #Will ensure this service starts only if dns_db is running
+          condition: service_healthy
+
+    networks:
+      - dns_project_network
+  
+  dns_db:
+    image : postgres:16 #Will pull the postgres image from docker hub if not present locally
+    ports:
+      - 5432:5432
+    restart: always
+    container_name: dns_project_db
+    env_file: .env # .env file is in the same directory as docker-compose.yml and should contain the following:
+        #POSTGRES_USER=postgres
+        #POSTGRES_PASSWORD=postgres
+        #POSTGRES_DB=dns_project_db
+    volumes:
+      - pgData:/var/lib/postgresql/data #Creating a named volume to persist data
+      - ./init_sql_scripts:/docker-entrypoint-initdb.d #This will run the scripts inside ./init_sql_scripts in our local directory for creating the db_links for the pgAgent and the functions for sending automated emails
+    networks:
+      - dns_project_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"] #Checking if the postgres server is ready
+      interval: 1m30s
+      retries: 5
+
+
+volumes: 
+  pgData: #Creating a volume for data persistence
+    driver:local
+networks:
+  dns_project_network:
+    driver: bridge      
+
+    

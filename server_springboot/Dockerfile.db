@@ -1,0 +1,25 @@
+FROM postgres:16
+
+# Install required packages
+RUN apt update && apt install -y \
+    postgresql-contrib pgagent \
+    wget build-essential libssl-dev zlib1g-dev \
+    libbz2-dev libreadline-dev libsqlite3-dev curl \
+    libncursesw5-dev xz-utils tk-dev libxml2-dev \
+    libxmlsec1-dev libffi-dev liblzma-dev \
+    postgresql-plpython3-16 \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install Python 3.11.11
+WORKDIR /usr/src
+RUN wget https://www.python.org/ftp/python/3.11.11/Python-3.11.11.tgz && \
+    tar xvf Python-3.11.11.tgz && \
+    cd Python-3.11.11 && \
+    ./configure --enable-optimizations && \
+    make -j$(nproc) && \
+    make altinstall && \
+    cd .. && rm -rf Python-3.11.11 Python-3.11.11.tgz
+
+# Default entrypoint
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["postgres"]

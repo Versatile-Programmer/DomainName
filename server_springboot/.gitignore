@@ -16,6 +16,4 @@ VARS.env
 *.log
 
 
-# Ignore Docker related files
-docker-compose.yml
 
